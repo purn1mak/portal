@@ -1,0 +1,18 @@
+# Default values for zookeeper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+privacera:
+  cloud:
+    service:
+      active: aws  # azure/aws
+
+zk:
+  version: 3.4.14
+  port: 2181
+  ensemble:
+    zooDataDir: /store/data
+    zooDataLogDir: /store/datalog
+    zooLogDir: /store/logs
+    zooServers: "server.1=zk-0.zkensemble:2888:3888 server.2=zk-1.zkensemble:2888:3888 server.3=zk-2.zkensemble:2888:3888"
+    zooStandaloneEnabled: "false"

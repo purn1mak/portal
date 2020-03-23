@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-solr-config-0
+data:
+{{- $path := printf "%s/conf/*" .Values.solr.conf.dir }}
+{{ (.Files.Glob $path ).AsConfig | indent 2 }}

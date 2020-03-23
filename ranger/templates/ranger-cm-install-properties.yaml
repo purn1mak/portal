@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-ranger-cm-install-properties
+data:
+{{- $path := printf "%s/props/install.properties" .Values.ranger.conf.dir }}
+{{ (.Files.Glob $path ).AsConfig | indent 2 }}

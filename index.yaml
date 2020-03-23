@@ -1,0 +1,49 @@
+apiVersion: v1
+entries:
+  dataserver:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-03-22T22:48:21.954502-07:00"
+    description: A Helm chart for Kubernetes
+    digest: 6e3acda7d4a80a2fa47c8f2293fac92e68c774a8d62c970aa857b29ed94950ee
+    name: dataserver
+    type: application
+    urls:
+    - dataserver-0.1.0.tgz
+    version: 0.1.0
+  mariadb:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-03-22T22:48:21.955038-07:00"
+    description: A Helm chart for Kubernetes
+    digest: 4b94f7de8f4a501fe736d98b58f6addb988df27a6358042b30c9c31944867e95
+    name: mariadb
+    type: application
+    urls:
+    - mariadb-0.1.0.tgz
+    version: 0.1.0
+  portal:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-03-22T22:48:21.957708-07:00"
+    dependencies:
+    - name: mariadb
+      repository: http://localhost:8080/
+      version: 0.1.0
+    - name: zookeeper
+      repository: http://localhost:8080/
+      version: 0.1.0
+    - name: solr
+      repository: http://localhost:8080/
+      version: 0.1.0
+    - name: ranger
+      repository: http://localhost:8080/
+      version: 0.1.0
+    description: A Helm chart for Kubernetes
+    digest: ac16ad680fd9f8378ef7ee8a539f43f312928c6c4a2cfbeac445e114816559f4
+    name: portal
+    type: application
+    urls:
+    - portal-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-03-22T22:48:21.952195-07:00"

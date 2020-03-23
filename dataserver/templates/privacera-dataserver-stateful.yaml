@@ -1,0 +1,43 @@
+apiVersion: apps/v1 
+kind: StatefulSet 
+metadata:
+  labels:
+    io.kompose.service: privacera-dataserver
+  name: privacera-dataserver
+spec:
+  selector:
+    matchLabels:
+        app: privacera-dataserver
+  serviceName: "privacera-dataserver"
+  replicas: 3
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: privacera-dataserver
+        app: privacera-dataserver
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - image: hub.privacera.com:5555/privacera_dataserver
+        name: privacera-dataserver
+        ports:
+        - containerPort: 8181
+        - containerPort: 8282
+        - containerPort: 9191
+        - containerPort: 9292
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/privacera/dataserver/conf
+          name: privacera-dataserver-vol
+      restartPolicy: Always
+
+  volumeClaimTemplates:
+  - metadata:
+      name: privacera-dataserver-vol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

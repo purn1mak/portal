@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: ranger
+  name: ranger
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ranger
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - image: hub2.privacera.com/ranger:rel_ds_2.0
+        name: ranger
+        ports:
+        - containerPort: 6080
+        resources: {}
+        volumeMounts:
+        - name: ranger-cm-install-properties-vol
+          mountPath: /opt/ranger/ranger-2.0.0-SNAPSHOT-admin/install.properties
+          subPath: install.properties
+        - mountPath: /opt/ranger/ranger-2.0.0-SNAPSHOT-admin/overrideconf
+          name: ranger-config-vol
+      restartPolicy: Always
+      volumes:
+        - name: ranger-cm-install-properties-vol 
+          configMap:
+            name: {{ .Release.Name }}-ranger-cm-install-properties
+        - name: ranger-config-vol
+          configMap:
+            name: {{ .Release.Name }}-ranger-cm-conf
+status: {}

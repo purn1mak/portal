@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	 <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <Pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+
+	<appender name="daily_rolling"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/containers/privacera.log</file>
+		<!-- rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"-->
+			<!-- daily rollover -->
+			<!-- <fileNamePattern>logs/privacera.%d{yyyy-MM-dd}.log</fileNamePattern> -->
+			<!-- keep 30 days' worth of history capped at 3GB total size -->
+			<!-- <maxHistory>30</maxHistory>
+			<totalSizeCap>10MB</totalSizeCap>
+		</rollingPolicy> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        	<fileNamePattern>/var/log/containers/privacera_%i.log</fileNamePattern>
+        	<minIndex>1</minIndex>
+        	<maxIndex>10</maxIndex>
+    	</rollingPolicy>
+    	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        	<maxFileSize>10MB</maxFileSize>
+    	</triggeringPolicy>
+		<encoder>
+			<pattern>%d [%thread] %-5level %logger:%line - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="zookeeper"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/containers/privacera_zookeeper.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        	<fileNamePattern>/var/log/containers/privacera_zookeeper_%i.log</fileNamePattern>
+        	<minIndex>1</minIndex>
+        	<maxIndex>10</maxIndex>
+    	</rollingPolicy>
+    	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        	<maxFileSize>10MB</maxFileSize>
+    	</triggeringPolicy>
+		<encoder>
+			<pattern>%d [%thread] %-5level %logger:%line - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="daily_rolling_metrics"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/containers/privacera_metrics.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        	<fileNamePattern>/var/log/containers/privacera_metrics_%i.log</fileNamePattern>
+        	<minIndex>1</minIndex>
+        	<maxIndex>10</maxIndex>
+    	</rollingPolicy>
+    	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        	<maxFileSize>10MB</maxFileSize>
+    	</triggeringPolicy>
+		<encoder>
+			<pattern>%d %logger:%line - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="daily_rolling_rest"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/containers/privacera_rest.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        	<fileNamePattern>/var/log/containers/privacera_rest_%i.log</fileNamePattern>
+        	<minIndex>1</minIndex>
+        	<maxIndex>10</maxIndex>
+    	</rollingPolicy>
+    	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        	<maxFileSize>10MB</maxFileSize>
+    	</triggeringPolicy>
+		<encoder>
+			<pattern>%d [%thread] %-5level %logger:%line - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="daily_rolling_audits_custom"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/containers/privacera_audit.json</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>/var/log/containers/privacera_audit.%d{yyyy-MM-dd}.json</fileNamePattern>
+			<!-- keep 30 days' worth of history capped at 3GB total size -->
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>10MB</totalSizeCap>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="com.privacera.common.AuditLogConversion" />
+		</encoder>
+	</appender>
+
+	<logger name="com.privacera" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling" />
+	</logger>
+
+	<logger name="com.alibaba" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling" />
+	</logger>
+	<!-- <logger name="com.privacera" level="ALL"> <appender-ref ref="daily_rolling"
+		/> </logger> -->
+	<logger name="com.privacera.controllers" level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling_rest" />
+	</logger>
+	<!-- Auditing -->
+	<logger name="privacera.audit" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling_audits_custom" />
+	</logger>
+	<logger name="org.hibernate" level="INFO" />
+
+	<!-- Metrics -->
+	<logger name="privacera.metrics" level="ALL">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling_metrics" />
+	</logger>
+	<logger name="org.apache.zookeeper" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="zookeeper" />
+	</logger>
+	<logger name="org.apache.kafka" level="ERROR">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling" />
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="daily_rolling" />
+	</root>
+
+</configuration>

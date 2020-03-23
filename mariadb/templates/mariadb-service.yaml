@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-zookeeper.yml -f docker-compose-mariadb.yml
+      -f docker-compose-solr.yml -fdocker-compose-ranger.yml -f docker-compose-privacera.yml
+      -f docker-compose-dataserver-standalone.yml -f docker-compose-dataserver.yml
+      -f docker-compose-tagsync.yml -f docker-compose-usersync.yml -f docker-compose-policysync.yml
+      -f docker-compose-http-collector.yml -f docker-compose-postgres.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mariadb
+  name: mariadb
+spec:
+  ports:
+{{- with .Values.mariadb }}
+  - name: {{ .port | quote }}
+    port: {{ .port }}
+    targetPort: {{ .port }}
+{{- end }}
+  selector:
+    io.kompose.service: mariadb
+status:
+  loadBalancer: {}

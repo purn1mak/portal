@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-zookeeper.yml -f docker-compose-mariadb.yml
+      -f docker-compose-solr.yml -fdocker-compose-ranger.yml -f docker-compose-privacera.yml
+      -f docker-compose-dataserver-standalone.yml -f docker-compose-dataserver.yml
+      -f docker-compose-tagsync.yml -f docker-compose-usersync.yml -f docker-compose-policysync.yml
+      -f docker-compose-http-collector.yml -f docker-compose-postgres.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mariadb
+  name: mariadb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mariadb
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.mariadb.password }}
+        image: mariadb:{{ .Values.mariadb.version }}
+        name: mariadb
+        ports:
+        - containerPort: {{ .Values.mariadb.port }}
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: {{ .Release.Name }}-mariadb-claim0
+      restartPolicy: Always
+      volumes:
+      - name: {{ .Release.Name }}-mariadb-claim0
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-mariadb-claim0
+status: {}

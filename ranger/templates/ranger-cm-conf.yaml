@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-ranger-cm-conf
+data:
+{{- $path := printf "%s/conf/*" .Values.ranger.conf.dir }}
+{{ (.Files.Glob $path ).AsConfig | indent 2 }}

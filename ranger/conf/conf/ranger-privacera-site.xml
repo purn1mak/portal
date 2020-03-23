@@ -1,0 +1,27 @@
+<configuration>
+         <property>
+                <name>ranger.proxyuser.admin.hosts</name>
+                <value>*</value>
+                <description />
+        </property>
+        <property>
+                <name>ranger.proxyuser.admin.users</name>
+                <value>*</value>
+                <description />
+        </property>
+        <property>
+                <name>ranger.proxyuser.admin.groups</name>
+                <value>*</value>
+                <description />
+        </property>
+        <property>
+                <name>ranger.authentication.allow.trustedproxy</name>
+                <value>true</value>
+                <description />
+        </property>
+        <property>
+                <name>ranger.audit.solr.collection.name</name>
+                <value>ranger_audits</value>
+                <description />
+        </property>
+</configuration>

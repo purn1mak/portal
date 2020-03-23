@@ -1,0 +1,14 @@
+# Default values for solr.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+solr:
+  conf:
+    dir: conf
+  cluster:
+    config:
+      zkHost: "zk-0.zkensemble:2181,zk-1.zkensemble:2181,zk-2.zkensemble:2181/solr"
+      solrHeap: 1g
+      solrHome: /store/data
+      solrLogsDir: /store/logs
+      solrPort: "8983"

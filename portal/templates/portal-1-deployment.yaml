@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: portal-1
+  name: portal-1
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: portal-1
+    spec:
+      securityContext:
+        fsGroup: 200
+      initContainers:
+      - name: copy-conf
+        image: hub2.privacera.com/privacera:rel_ds_2.0
+        command: ["bash", "-c", "cp -r /conf_ro/. /opt/privacera/portal/conf"]
+        volumeMounts:
+        - mountPath: /opt/privacera/portal/conf
+          name: conf-vol
+        - mountPath: /conf_ro
+          name: portal-1-conf
+      - name: copy-bin
+        image: hub2.privacera.com/privacera:rel_ds_2.0
+        command: ["bash", "-c", "cp -r /bin_ro/. /opt/privacera/portal/bin"]
+        volumeMounts:
+        - mountPath: /opt/privacera/portal/bin
+          name: bin-vol
+        - mountPath: /bin_ro
+          name: portal-1-bin
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - image: hub2.privacera.com/privacera:rel_ds_2.0
+        name: portal-1
+        ports:
+        - containerPort: {{ .Values.portal.port }} 
+        resources: {}
+        volumeMounts:
+        - mountPath: /opt/privacera/portal/conf
+          name: conf-vol 
+        - mountPath: /opt/privacera/portal/bin
+          name: bin-vol 
+        - mountPath: /var/log/containers
+          name: var-log
+      - image: hub2.privacera.com/privacera:rel_ds_2.0
+        name: portal-log-1
+        command: ["bash", "-c", "while ! tail -n+1 -f /var/log/containers/privacera.log ; do sleep 1 ; done"]
+        volumeMounts:
+        - mountPath: /var/log/containers
+          name: var-log
+      restartPolicy: Always
+      volumes:
+      - name: {{ .Release.Name }}-portal-1-claim0
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-portal-1-claim0
+      - name: portal-1-conf
+        configMap: 
+            name: {{ .Release.Name }}-portal-cm-conf
+      - name: portal-1-bin
+        configMap:
+            name: {{ .Release.Name }}-portal-cm-bin
+            defaultMode: 0755
+      - name: conf-vol
+        emptyDir: {}
+      - name: bin-vol
+        emptyDir: {}
+      - name: var-log
+        emptyDir: {}
+#      - name: portal-1-conf
+#        azureDisk:
+#          kind: Managed
+#          diskName: jay_pv_portal-1-pv1
+#          diskURI: /subscriptions/27e89087-7229-44ef-855d-b716258bd216/resourceGroups/MC_aks_poc_jay-testaks_eastus/providers/Microsoft.Compute/disks/jay_pv_portal-1-pv1 
+#      - name: portal-1-bin
+#        azureDisk:
+#          kind: Managed
+#          diskName: jay_pv_portal-1-pv0
+#          diskURI: /subscriptions/27e89087-7229-44ef-855d-b716258bd216/resourceGroups/MC_aks_poc_jay-testaks_eastus/providers/Microsoft.Compute/disks/jay_pv_portal-1-pv0 
+status: {}

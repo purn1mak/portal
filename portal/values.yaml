@@ -1,0 +1,7 @@
+# Default values for portal.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+portal:
+  port: 6868
+  internal: false

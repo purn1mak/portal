@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-solr-config-1
+{{- $path := printf "%s/solr.zip" .Values.solr.conf.dir }}
+binaryData:
+  solr.zip: {{ .Files.Get $path | b64enc }}
